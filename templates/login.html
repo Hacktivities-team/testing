@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Girişi</title>
+</head>
+<body>
+    <h1>🔒 Admin Girişi</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+                <li style="color: {% if category == 'error' %}red{% elif category == 'warning' %}orange{% else %}green{% endif %};">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <label for="username">İstifadəçi Adı (123):</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Parol (123):</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Giriş Et</button>
+    </form>
+    
+    <hr>
+    <p><a href="{{ url_for('index') }}">Əsas Səhifəyə Qayıt</a></p>
+</body>
+</html>
