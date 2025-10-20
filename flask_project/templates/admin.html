@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <title>🌍 Admin Panel - Ölkə İdarəetməsi</title>
+</head>
+<body>
+    <h1>🛠️ Admin Panel - Ölkə Əlavə Et</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes" style="list-style: none; padding: 0;">
+            {% for category, message in messages %}
+                <li style="border: 1px solid {% if category == 'error' %}red{% elif category == 'warning' %}orange{% else %}green{% endif %}; padding: 10px; margin-bottom: 10px;">
+                    {{ message }}
+                </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div style="margin-bottom: 20px;">
+        <a href="{{ url_for('index') }}">🏡 Əsas Səhifə</a> | 
+        <a href="{{ url_for('category_panel') }}">📋 Kateqoriya İdarəetməsi</a> |
+        <a href="{{ url_for('content_panel') }}">⚙️ Kontent İdarəetməsi</a> | <a href="{{ url_for('logout') }}">🚪 Çıxış</a>
+    </div>
+
+    <hr>
+    
+    <h2>1. Yeni Ölkə Əlavə Et</h2>
+    <form method="POST">
+        <label for="name">Ölkənin Adı:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="code">Ölkənin Kodu (3 hərf):</label>
+        <input type="text" id="code" name="code" maxlength="3" required><br><br>
+
+        <label for="pin_lat">Map Lat (Global Explorer):</label>
+        <input type="text" id="pin_lat" name="pin_lat" value="0.0"> 
+        <label for="pin_lon">Map Lon (Global Explorer):</label>
+        <input type="text" id="pin_lon" name="pin_lon" value="0.0"><br><br>
+
+        <button type="submit">Əlavə Et</button>
+    </form>
+    
+    <hr>
+
+    <h2>2. Hal-hazırda Əlavə Edilmiş Ölkələr</h2>
+    <table border="1" style="width: 70%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Adı/Kodu</th>
+                <th>Xəritə Koor.</th>
+                <th>Kateqoriyaları</th>
+                <th>Əməliyyatlar</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for country in countries %}
+            <tr>
+                <td>{{ country.id }}</td>
+                <td>{{ country.name }} ({{ country.code }})</td>
+                <td>{{ country.pin_lat }}, {{ country.pin_lon }}</td>
+                <td>
+                    {% if country.categories %}
+                        {{ country.categories | map(attribute='name') | join(', ') }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('delete_country', country_id=country.id) }}" style="display: inline-block;">
+                        <button type="submit" onclick="return confirm('Bütün yerləri ilə birlikdə bu ölkəni silmək istəyirsinizmi?')" style="background-color: red; color: white;">
+                            Sil
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
